@@ -10,8 +10,11 @@ read_csv2('./data/fallecidos_covid.csv') -> datos_fallecidoscovid
 
 read_delim('./data/fallecidos_sinadef.csv',delim="|") -> datos_sinadef
 
+a = Sys.time()
 read_csv('./data/vacunas_covid.csv') -> datos_vacunas
-  
+b = Sys.time()
+b-a
+
 # Limpieza ----------------------------------------------------------------
 
 library(dplyr)
@@ -31,7 +34,8 @@ datos_positivos %>% str
 datos_pcr %>% str
 datos_pcr$RESULTADO %>% table
 datos_pcr %>% 
-  filter(FECHATOMAMUESTRA>=as.Date("2020-03-05") | (FECHATOMAMUESTRA>=as.Date("2020-01-01") & RESULTADO == "NEGATIVO")) %>% 
+  filter(FECHATOMAMUESTRA>=as.Date("2020-03-05") | (FECHATOMAMUESTRA>=as.Date("2020-01-01") & 
+                                                      RESULTADO == "NEGATIVO")) %>% 
   filter(FECHATOMAMUESTRA<=as.Date(today())) %>% 
   filter(RESULTADO %in% c("POSITIVO","NEGATIVO")) %>% 
   filter(!edad %in% c('*','NULL')) -> datos_pcr
@@ -63,7 +67,7 @@ datos_vacunas %>% str
 library(ggplot2)
 
 corte_positivos = datos_positivos$FECHA_CORTE[1]
-corte_positivos = paste0(day(corte), "/", month(corte), "/", year(corte))
+corte_positivos = paste0(day(corte_positivos), "/", month(corte_positivos), "/", year(corte_positivos))
 
 datos_positivos %>% 
   dplyr::filter(!is.na(SEXO)) %>% 
@@ -87,7 +91,7 @@ datos_positivos %>%
         panel.background = element_rect(fill="white", color="white"),
         axis.text.x=element_blank()) -> grafico01
 
-ggsave('./export/grafico01.png',grafico01)
+ggsave('./export/grafico01.png',grafico01, width = 15, height = 15, units = "cm")
 
 datos_positivos %>%
   dplyr::filter(!is.na(FECHA_RESULTADO)) %>% 
@@ -148,7 +152,7 @@ corte_vacunas = datos_vacunas$FECHA_CORTE[1]
 corte_vacunas = paste0(day(corte_vacunas),"/",month(corte_vacunas),"/",year(corte_vacunas))
 
 library(scales)
-
+library(tidyr)
 datos_vacunas %>% 
   replace_na(list(FABRICANTE = "NO ESPECIFICADO")) %>% 
   count(FABRICANTE,DOSIS) %>% 
