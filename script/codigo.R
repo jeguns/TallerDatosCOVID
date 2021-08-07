@@ -181,6 +181,7 @@ datos_vacunas %>%
                labels = date_format("%d %b"),
                breaks = function(x) seq.Date(from = min(x), to = max(x), by = "1 month")) + 
   scale_y_continuous(labels = comma) +
+  geom_hline(yintercept=200000)+
   labs(x = "Fecha de vacunación",
        y = "Cantidad de dosis",
        title = paste0("Evolución de dosis aplicadas según fabricante de la vacuna"),
@@ -219,3 +220,14 @@ datos_vacunas %>%
 
 
 ggsave('./export/grafico06.png',grafico06,width = 20,height = 12.5, units="cm")
+
+
+datos_fallecidoscovid %>% 
+  count(DEPARTAMENTO) %>% 
+  arrange(n)
+
+datos_vacunas %>% 
+  count(DEPARTAMENTO) %>% 
+  arrange(n)
+
+
